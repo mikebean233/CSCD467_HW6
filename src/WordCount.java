@@ -53,7 +53,7 @@ public class WordCount {
   }
   
   public static class IntSumReducer 
-       extends Reducer<Text,IntWritable,Text,IntWritable> {
+       extends Reducer<Object,IntWritable,Text,IntWritable> {
     private IntWritable result = new IntWritable();
 
     public void reduce(Object key, Iterable<IntWritable> values, 
