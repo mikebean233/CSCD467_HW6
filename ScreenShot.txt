@@ -1,0 +1,227 @@
+mpeterson10@cscd-doop01:~/github/CSCD467_HW6$ git pull
+remote: Counting objects: 4, done.
+remote: Compressing objects: 100% (1/1), done.
+remote: Total 4 (delta 2), reused 4 (delta 2), pack-reused 0
+Unpacking objects: 100% (4/4), done.
+From https://github.com/mikebean233/CSCD467_HW6
+   1e14a1e..aba9fd1  master     -> origin/master
+Updating 1e14a1e..aba9fd1
+Fast-forward
+ src/WordCount.java | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+mpeterson10@cscd-doop01:~/github/CSCD467_HW6$ sh do_all.sh /user/mpeterson10/wc
+
+
+----------------- BUILDING PROGRAM -------------------------
++ hadoop com.sun.tools.javac.Main ./src/WordCount.java -d ./bin
++ jar -cvf ./bin/wc.jar -C ./bin/ .
+added manifest
+adding: WordCount$IntSumReducer.class(in = 1649) (out= 699)(deflated 57%)
+adding: wc.jar(in = 111) (out= 65)(deflated 41%)
+adding: WordCount.class(in = 2008) (out= 1081)(deflated 46%)
+adding: WordCount$LameReducer.class(in = 1637) (out= 689)(deflated 57%)
+adding: WordCount$TokenizerMapper.class(in = 2647) (out= 1187)(deflated 55%)
+
+
+---------- REMOVING OLD OUTPUT FILES FROM HDFS-------------
++ hadoop fs -rm -r /user/mpeterson10/wc/output
+16/02/29 22:38:28 INFO fs.TrashPolicyDefault: Namenode trash configuration: Deletion interval = 0 minutes, Emptier interval = 0 minutes.
+Deleted /user/mpeterson10/wc/output
+
+
+----------- COPYING NEW INPUT FILES TO HDFS ---------------
++ hadoop fs -rm -r /user/mpeterson10/wc/input/
+16/02/29 22:38:30 INFO fs.TrashPolicyDefault: Namenode trash configuration: Deletion interval = 0 minutes, Emptier interval = 0 minutes.
+Deleted /user/mpeterson10/wc/input
++ hadoop fs -mkdir /user/mpeterson10/wc/input/
++ hadoop fs -copyFromLocal ./input/file1 ./input/file2 /user/mpeterson10/wc/input
+
+
+--------- EXECUTING PROGRAM ("world" as pattern) ------------
++ hadoop jar ./bin/wc.jar WordCount world /user/mpeterson10/wc/input /user/mpeterson10/wc/output
+16/02/29 22:38:37 INFO client.RMProxy: Connecting to ResourceManager at cscd-doop01/146.187.135.37:8032
+16/02/29 22:38:38 INFO input.FileInputFormat: Total input paths to process : 2
+16/02/29 22:38:38 INFO mapreduce.JobSubmitter: number of splits:2
+16/02/29 22:38:38 INFO mapreduce.JobSubmitter: Submitting tokens for job: job_1456241668968_0463
+16/02/29 22:38:39 INFO impl.YarnClientImpl: Submitted application application_1456241668968_0463
+16/02/29 22:38:39 INFO mapreduce.Job: The url to track the job: http://cscd-doop01:8088/proxy/application_1456241668968_0463/
+16/02/29 22:38:39 INFO mapreduce.Job: Running job: job_1456241668968_0463
+16/02/29 22:38:45 INFO mapreduce.Job: Job job_1456241668968_0463 running in uber mode : false
+16/02/29 22:38:45 INFO mapreduce.Job:  map 0% reduce 0%
+16/02/29 22:38:51 INFO mapreduce.Job:  map 100% reduce 0%
+16/02/29 22:38:57 INFO mapreduce.Job:  map 100% reduce 100%
+16/02/29 22:38:57 INFO mapreduce.Job: Job job_1456241668968_0463 completed successfully
+16/02/29 22:38:57 INFO mapreduce.Job: Counters: 50
+	File System Counters
+		FILE: Number of bytes read=225
+		FILE: Number of bytes written=347000
+		FILE: Number of read operations=0
+		FILE: Number of large read operations=0
+		FILE: Number of write operations=0
+		HDFS: Number of bytes read=345
+		HDFS: Number of bytes written=213
+		HDFS: Number of read operations=9
+		HDFS: Number of large read operations=0
+		HDFS: Number of write operations=2
+	Job Counters 
+		Launched map tasks=2
+		Launched reduce tasks=1
+		Data-local map tasks=1
+		Rack-local map tasks=1
+		Total time spent by all maps in occupied slots (ms)=7804
+		Total time spent by all reduces in occupied slots (ms)=3073
+		Total time spent by all map tasks (ms)=7804
+		Total time spent by all reduce tasks (ms)=3073
+		Total vcore-seconds taken by all map tasks=7804
+		Total vcore-seconds taken by all reduce tasks=3073
+		Total megabyte-seconds taken by all map tasks=7991296
+		Total megabyte-seconds taken by all reduce tasks=3146752
+	Map-Reduce Framework
+		Map input records=7
+		Map output records=3
+		Map output bytes=213
+		Map output materialized bytes=231
+		Input split bytes=240
+		Combine input records=3
+		Combine output records=3
+		Reduce input groups=2
+		Reduce shuffle bytes=231
+		Reduce input records=3
+		Reduce output records=3
+		Spilled Records=6
+		Shuffled Maps =2
+		Failed Shuffles=0
+		Merged Map outputs=2
+		GC time elapsed (ms)=123
+		CPU time spent (ms)=2390
+		Physical memory (bytes) snapshot=758943744
+		Virtual memory (bytes) snapshot=2504773632
+		Total committed heap usage (bytes)=524812288
+	Shuffle Errors
+		BAD_ID=0
+		CONNECTION=0
+		IO_ERROR=0
+		WRONG_LENGTH=0
+		WRONG_MAP=0
+		WRONG_REDUCE=0
+	File Input Format Counters 
+		Bytes Read=105
+	File Output Format Counters 
+		Bytes Written=213
+
+
+-------- COPYING OUTPUT FILES FROM HDFS TO LOCAL FS --------
++ rm ./output/new/_SUCCESS ./output/new/part-r-00000
++ mkdir ./output/new
+mkdir: cannot create directory ‘./output/new’: File exists
++ hadoop fs -copyToLocal /user/mpeterson10/wc/output/* ./output/new
+16/02/29 22:38:59 WARN hdfs.DFSClient: DFSInputStream has been closed already
+16/02/29 22:39:00 WARN hdfs.DFSClient: DFSInputStream has been closed already
+
+
+-------------- PRINTING CONTENTS OF OUTPUT FILES -----------
+world	hdfs://cscd-doop01:9000/user/mpeterson10/wc/input/file1:0+45, 	2
+world	hdfs://cscd-doop01:9000/user/mpeterson10/wc/input/file2:0+60, 	4
+world	hdfs://cscd-doop01:9000/user/mpeterson10/wc/input/file2:0+60, 	3
+
+
+---------- REMOVING OLD OUTPUT FILES FROM HDFS-------------
++ hadoop fs -rm -r /user/mpeterson10/wc/output
+16/02/29 22:39:02 INFO fs.TrashPolicyDefault: Namenode trash configuration: Deletion interval = 0 minutes, Emptier interval = 0 minutes.
+Deleted /user/mpeterson10/wc/output
+
+
+----------- COPYING NEW INPUT FILES TO HDFS ---------------
++ hadoop fs -rm -r /user/mpeterson10/wc/input/
+16/02/29 22:39:04 INFO fs.TrashPolicyDefault: Namenode trash configuration: Deletion interval = 0 minutes, Emptier interval = 0 minutes.
+Deleted /user/mpeterson10/wc/input
++ hadoop fs -mkdir /user/mpeterson10/wc/input/
++ hadoop fs -copyFromLocal ./input/file1 ./input/file2 /user/mpeterson10/wc/input
+
+
+--------- EXECUTING PROGRAM ("luck" as pattern) ------------
++ hadoop jar ./bin/wc.jar WordCount luck /user/mpeterson10/wc/input /user/mpeterson10/wc/output
+16/02/29 22:39:11 INFO client.RMProxy: Connecting to ResourceManager at cscd-doop01/146.187.135.37:8032
+16/02/29 22:39:12 INFO input.FileInputFormat: Total input paths to process : 2
+16/02/29 22:39:12 INFO mapreduce.JobSubmitter: number of splits:2
+16/02/29 22:39:13 INFO mapreduce.JobSubmitter: Submitting tokens for job: job_1456241668968_0464
+16/02/29 22:39:13 INFO impl.YarnClientImpl: Submitted application application_1456241668968_0464
+16/02/29 22:39:13 INFO mapreduce.Job: The url to track the job: http://cscd-doop01:8088/proxy/application_1456241668968_0464/
+16/02/29 22:39:13 INFO mapreduce.Job: Running job: job_1456241668968_0464
+16/02/29 22:39:18 INFO mapreduce.Job: Job job_1456241668968_0464 running in uber mode : false
+16/02/29 22:39:18 INFO mapreduce.Job:  map 0% reduce 0%
+16/02/29 22:39:24 INFO mapreduce.Job:  map 100% reduce 0%
+16/02/29 22:39:30 INFO mapreduce.Job:  map 100% reduce 100%
+16/02/29 22:39:30 INFO mapreduce.Job: Job job_1456241668968_0464 completed successfully
+16/02/29 22:39:30 INFO mapreduce.Job: Counters: 50
+	File System Counters
+		FILE: Number of bytes read=150
+		FILE: Number of bytes written=346847
+		FILE: Number of read operations=0
+		FILE: Number of large read operations=0
+		FILE: Number of write operations=0
+		HDFS: Number of bytes read=345
+		HDFS: Number of bytes written=140
+		HDFS: Number of read operations=9
+		HDFS: Number of large read operations=0
+		HDFS: Number of write operations=2
+	Job Counters 
+		Launched map tasks=2
+		Launched reduce tasks=1
+		Data-local map tasks=1
+		Rack-local map tasks=1
+		Total time spent by all maps in occupied slots (ms)=7692
+		Total time spent by all reduces in occupied slots (ms)=3326
+		Total time spent by all map tasks (ms)=7692
+		Total time spent by all reduce tasks (ms)=3326
+		Total vcore-seconds taken by all map tasks=7692
+		Total vcore-seconds taken by all reduce tasks=3326
+		Total megabyte-seconds taken by all map tasks=7876608
+		Total megabyte-seconds taken by all reduce tasks=3405824
+	Map-Reduce Framework
+		Map input records=7
+		Map output records=2
+		Map output bytes=140
+		Map output materialized bytes=156
+		Input split bytes=240
+		Combine input records=2
+		Combine output records=2
+		Reduce input groups=2
+		Reduce shuffle bytes=156
+		Reduce input records=2
+		Reduce output records=2
+		Spilled Records=4
+		Shuffled Maps =2
+		Failed Shuffles=0
+		Merged Map outputs=2
+		GC time elapsed (ms)=153
+		CPU time spent (ms)=2220
+		Physical memory (bytes) snapshot=765804544
+		Virtual memory (bytes) snapshot=2507268096
+		Total committed heap usage (bytes)=524812288
+	Shuffle Errors
+		BAD_ID=0
+		CONNECTION=0
+		IO_ERROR=0
+		WRONG_LENGTH=0
+		WRONG_MAP=0
+		WRONG_REDUCE=0
+	File Input Format Counters 
+		Bytes Read=105
+	File Output Format Counters 
+		Bytes Written=140
+
+
+-------- COPYING OUTPUT FILES FROM HDFS TO LOCAL FS --------
++ rm ./output/new/_SUCCESS ./output/new/part-r-00000
++ mkdir ./output/new
+mkdir: cannot create directory ‘./output/new’: File exists
++ hadoop fs -copyToLocal /user/mpeterson10/wc/output/* ./output/new
+16/02/29 22:39:33 WARN hdfs.DFSClient: DFSInputStream has been closed already
+16/02/29 22:39:33 WARN hdfs.DFSClient: DFSInputStream has been closed already
+
+
+-------------- PRINTING CONTENTS OF OUTPUT FILES -----------
+luck	hdfs://cscd-doop01:9000/user/mpeterson10/wc/input/file1:0+45, 	1
+luck	hdfs://cscd-doop01:9000/user/mpeterson10/wc/input/file2:0+60, 	4
+mpeterson10@cscd-doop01:~/github/CSCD467_HW6$ 
