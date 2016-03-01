@@ -16,6 +16,4 @@ echo "-------- COPYING OUTPUT FILES FROM HDFS TO LOCAL FS --------"
 sh copy_output_files.sh
 echo;echo
 echo "-------------- PRINTING CONTENTS OF OUTPUT FILES -----------"
-cat ./output/new
-
-
+cat ./output/new/*
