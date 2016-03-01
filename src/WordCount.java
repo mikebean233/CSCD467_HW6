@@ -29,7 +29,7 @@ public class WordCount {
         String thisToken = itr.nextToken();
         if(thisToken.toLowerCase().equals(context.getConfiguration().get("target"))){
           word.set(path + "," + thisToken);
-          context.write(word, one);//new IntWritable(++occurenceCount));
+          context.write(word, new IntWritable(++occurenceCount));
         }
       }
     }
