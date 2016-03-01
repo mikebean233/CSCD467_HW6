@@ -24,6 +24,7 @@ public class WordCount {
       String lineNo = itr.nextToken();
       String path = ((FileSplit) context.getInputSplit()).getPath().toString();
       String target = context.getConfiguration().get("target");
+      String fileLength = "0+" + context.getInputSplit().getLength();
       int occurenceCount = 0;
 
       while (itr.hasMoreTokens()) {
@@ -31,8 +32,8 @@ public class WordCount {
         if(thisToken.toLowerCase().equals(target))
           occurenceCount++;
         }  
-        word.set(target + "\t" + path + ":" + lineNo + ", ");
-        context.write(word, new IntWritable(occurenceCount));  
+        word.set(target + "\t" + path + ":" + fileLength + ", " + lineNo);
+        context.write(word, new IntWritable(occurenceCount == 0 ? 0 : 1));  
     }
   }
   
@@ -47,8 +48,10 @@ public class WordCount {
       for (IntWritable val : values) {
         sum += val.get();
       }
-      result.set(sum);
-      context.write(key, result);
+      if(sum > 0){
+        result.set(sum);
+        context.write(key, result);
+      }
     }
   }
 
