@@ -14,7 +14,6 @@ public class WordCount {
 
   public static class TokenizerMapper extends Mapper<Object, Text, Text, Text>{
     
-    //private final static IntWritable one = new IntWritable(1);
     private Text targetAndPath = new Text();
     private Text lineNo = new Text();
 
@@ -24,7 +23,7 @@ public class WordCount {
       StringTokenizer itr = new StringTokenizer(value.toString());
       String lineNoString = itr.nextToken();
       String path = ((FileSplit) context.getInputSplit()).getPath().toString();
-      String target = context.getConfiguration().get("target");
+      String target = context.getConfiguration().get("MyKey");
       String fileLength = "0+" + context.getInputSplit().getLength();
       int occurenceCount = 0;
 
@@ -34,30 +33,23 @@ public class WordCount {
           occurenceCount++;
       }  
       if(occurenceCount !=0){
-        targetAndPath.set(target + "\t" + path + ":" + fileLength + ", ");// + lineNo);
+        targetAndPath.set(target + "\t" + path + ":" + fileLength + ", ");
         lineNo.set(lineNoString);
-        context.write(targetAndPath, lineNo);//new IntWritable(occurenceCount == 0 ? 0 : 1));  
+        context.write(targetAndPath, lineNo);  
       }
     }
-  }
+  } // end TokenizeMapper
   
-  public static class IntSumReducer 
-       extends Reducer<Text,Text,Text,Text> {
+  public static class LameReducer extends Reducer<Text,Text,Text,Text> {
     private Text result = new Text();
 
-    public void reduce(Text key, Iterable<Text> values, 
-                       Context context
-                       ) throws IOException, InterruptedException {
-      int sum = 0;
+    public void reduce(Text key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
       for (Text val : values) {
-        //sum += val.get();
-      //if(sum > 0){
         result.set(val);
         context.write(key, result);
-      //}
       }
     }
-  }
+  } // end LameReducer
 
   public static void main(String[] args) throws Exception {
     Configuration conf = new Configuration();
@@ -69,13 +61,13 @@ public class WordCount {
     }
 
     String pattern = args[0];
-    conf.set("target", pattern);
+    conf.set("MyKey", pattern);
 
-    Job job = Job.getInstance(conf, "word count");// //Job(conf, "word count");
+    Job job = Job.getInstance(conf, "word count");
     job.setJarByClass(WordCount.class);
     job.setMapperClass(TokenizerMapper.class);
-    job.setCombinerClass(IntSumReducer.class);
-    job.setReducerClass(IntSumReducer.class);
+    job.setCombinerClass(LameReducer.class);
+    job.setReducerClass(LameReducer.class);
     job.setOutputKeyClass(Text.class);
     job.setOutputValueClass(Text.class);
 
@@ -87,5 +79,6 @@ public class WordCount {
       new Path(otherArgs[otherArgs.length - 1]));
 
     System.exit(job.waitForCompletion(true) ? 0 : 1);
-  }
-}
+  }// end main
+}// end 
+
