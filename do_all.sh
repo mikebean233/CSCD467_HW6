@@ -32,7 +32,7 @@ cat ./output/new/*
 
 # ======================= LUCK ================================== #
 
-
+echo;echo;
 echo "---------- REMOVING OLD OUTPUT FILES FROM HDFS-------------"
 sh remove_output_files.sh $hdfsProgramRootPath
 
