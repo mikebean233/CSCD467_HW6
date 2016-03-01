@@ -12,16 +12,16 @@ import org.apache.hadoop.util.GenericOptionsParser;
 
 public class WordCount {
 
-  public static class TokenizerMapper extends Mapper<Object, Text, Text, IntWritable>{
+  public static class TokenizerMapper extends Mapper<Object, Text, Text, Text>{
     
     private final static IntWritable one = new IntWritable(1);
-    private Text word = new Text();
-      
+    private Text targetAndPath = new Text();
+    private Text lineNo = new Text();
+
     public void map(Object key, Text value, Context context) throws IOException, InterruptedException {
       context.getFileClassPaths();
 
       StringTokenizer itr = new StringTokenizer(value.toString());
-      String lineNo = itr.nextToken();
       String path = ((FileSplit) context.getInputSplit()).getPath().toString();
       String target = context.getConfiguration().get("target");
       String fileLength = "0+" + context.getInputSplit().getLength();
@@ -31,26 +31,29 @@ public class WordCount {
         String thisToken = itr.nextToken();
         if(thisToken.toLowerCase().equals(target))
           occurenceCount++;
-        }  
-        word.set(target + "\t" + path + ":" + fileLength + ", " + lineNo);
-        context.write(word, new IntWritable(occurenceCount == 0 ? 0 : 1));  
+      }  
+      if(occurentCount !=0){
+        targetAndPath.set(target + "\t" + path + ":" + fileLength + ", ");// + lineNo);
+        lineNo.set(context.getConfiguration().get("target"));
+        context.write(word, lineNo);//new IntWritable(occurenceCount == 0 ? 0 : 1));  
+      }
     }
   }
   
   public static class IntSumReducer 
-       extends Reducer<Text,IntWritable,Text,IntWritable> {
-    private IntWritable result = new IntWritable();
+       extends Reducer<Text,Text,Text,Text> {
+    private Text result = new Text();
 
     public void reduce(Text key, Iterable<IntWritable> values, 
                        Context context
                        ) throws IOException, InterruptedException {
       int sum = 0;
-      for (IntWritable val : values) {
-        sum += val.get();
-      }
-      if(sum > 0){
-        result.set(sum);
+      for (Text val : values) {
+        //sum += val.get();
+      //if(sum > 0){
+        result.set(val);
         context.write(key, result);
+      //}
       }
     }
   }
