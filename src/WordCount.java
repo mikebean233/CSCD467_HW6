@@ -14,7 +14,7 @@ public class WordCount {
 
   public static class TokenizerMapper extends Mapper<Object, Text, Text, Text>{
     
-    private final static IntWritable one = new IntWritable(1);
+    //private final static IntWritable one = new IntWritable(1);
     private Text targetAndPath = new Text();
     private Text lineNo = new Text();
 
@@ -32,10 +32,10 @@ public class WordCount {
         if(thisToken.toLowerCase().equals(target))
           occurenceCount++;
       }  
-      if(occurentCount !=0){
+      if(occurenceCount !=0){
         targetAndPath.set(target + "\t" + path + ":" + fileLength + ", ");// + lineNo);
         lineNo.set(context.getConfiguration().get("target"));
-        context.write(word, lineNo);//new IntWritable(occurenceCount == 0 ? 0 : 1));  
+        context.write(targetAndPath, lineNo);//new IntWritable(occurenceCount == 0 ? 0 : 1));  
       }
     }
   }
@@ -44,7 +44,7 @@ public class WordCount {
        extends Reducer<Text,Text,Text,Text> {
     private Text result = new Text();
 
-    public void reduce(Text key, Iterable<IntWritable> values, 
+    public void reduce(Text key, Iterable<Text> values, 
                        Context context
                        ) throws IOException, InterruptedException {
       int sum = 0;
