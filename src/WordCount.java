@@ -27,11 +27,11 @@ public class WordCount {
 
       while (itr.hasMoreTokens()) {
         String thisToken = itr.nextToken();
-        if(thisToken.toLowerCase().equals(context.getConfiguration().get("target"))){
-          word.set(path + "," + thisToken);
-          context.write(word, new IntWritable(++occurenceCount));
-        }
-      }
+        if(thisToken.toLowerCase().equals(context.getConfiguration().get("target")))
+          occurenceCount++;
+        }  
+        word.set(thisToken + "\t" + path + ", ");
+        context.write(word, new IntWritable(++occurenceCount));  
     }
   }
   
