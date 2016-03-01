@@ -14,7 +14,7 @@ public class WordCount {
 
   public static class TokenizerMapper extends Mapper<Object, Text, Text, IntWritable>{
     
-    //private final static IntWritable one = new IntWritable(1);
+    private final static IntWritable one = new IntWritable(1);
     private Text word = new Text();
       
     public void map(Object key, Text value, Context context) throws IOException, InterruptedException {
@@ -29,7 +29,7 @@ public class WordCount {
         String thisToken = itr.nextToken();
         if(thisToken.toLowerCase().equals(context.getConfiguration().get("target"))){
           word.set(path + "," + thisToken);
-          context.write(word, new IntWritable(++occurenceCount));
+          context.write(word, one);//new IntWritable(++occurenceCount));
         }
       }
     }
