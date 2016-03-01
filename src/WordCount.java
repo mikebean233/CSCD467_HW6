@@ -22,6 +22,7 @@ public class WordCount {
       context.getFileClassPaths();
 
       StringTokenizer itr = new StringTokenizer(value.toString());
+      String lineNoString = itr.nextToken();
       String path = ((FileSplit) context.getInputSplit()).getPath().toString();
       String target = context.getConfiguration().get("target");
       String fileLength = "0+" + context.getInputSplit().getLength();
@@ -34,7 +35,7 @@ public class WordCount {
       }  
       if(occurenceCount !=0){
         targetAndPath.set(target + "\t" + path + ":" + fileLength + ", ");// + lineNo);
-        lineNo.set(context.getConfiguration().get("target"));
+        lineNo.set(lineNoString);
         context.write(targetAndPath, lineNo);//new IntWritable(occurenceCount == 0 ? 0 : 1));  
       }
     }
