@@ -1,5 +1,5 @@
 #! /bin/bash
 set -x
-hadoop fs -rm -r /user/mpeterson10/wc/input/
-hadoop fs -mkdir  /user/mpeterson10/wc/input/
-hadoop fs -copyFromLocal ./input/* /user/mpeterson10/wc/input
+hadoop fs -rm -r "$1"/input/
+hadoop fs -mkdir  "$1"/input/
+hadoop fs -copyFromLocal ./input/* "$1"/input
