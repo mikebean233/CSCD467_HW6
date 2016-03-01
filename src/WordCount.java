@@ -23,14 +23,15 @@ public class WordCount {
       StringTokenizer itr = new StringTokenizer(value.toString());
       String lineNo = itr.nextToken();
       String path = ((FileSplit) context.getInputSplit()).getPath().toString();
+      String target = context.getConfiguration().get("target");
       int occurenceCount = 0;
 
       while (itr.hasMoreTokens()) {
         String thisToken = itr.nextToken();
-        if(thisToken.toLowerCase().equals(context.getConfiguration().get("target")))
+        if(thisToken.toLowerCase().equals(target))
           occurenceCount++;
         }  
-        word.set(thisToken + "\t" + path + ", ");
+        word.set(target + "\t" + path + ", ");
         context.write(word, new IntWritable(++occurenceCount));  
     }
   }
