@@ -31,8 +31,8 @@ public class WordCount {
         if(thisToken.toLowerCase().equals(target))
           occurenceCount++;
         }  
-        word.set(target + "\t" + path + ", ");
-        context.write(word, new IntWritable(++occurenceCount));  
+        word.set(target + "\t" + path + ":" + lineNo + ", ");
+        context.write(word, new IntWritable(occurenceCount));  
     }
   }
   
